@@ -1,0 +1,114 @@
+body {
+	margin: 0;
+	padding: 0;
+}
+.goods {
+	height: 385px;
+	overflow: hidden;
+	width: 200px;
+	padding: 5px;
+	border: 1px solid #ccc;
+	margin-bottom: 40px;
+	margin-right: 20px;
+	float:left;
+}
+.name {
+	height: 20px;
+	line-height: 20px;
+	overflow: hidden;
+	width: 200px;
+}
+.des {
+	height: 20px;
+	line-height: 20px;
+	overflow: hidden;
+	color: #ff2832;
+	font-size: 14px;
+}
+.price {
+	color: #ff2832;
+	font-weight: bold;
+	line-height: 20px;
+}
+.comment {
+	color: #1a66b3;
+	line-height: 20px;
+}
+
+.name a:visited, a:link, a:active {
+    text-decoration:none;
+    color:#000000;
+}
+
+.name a:hover {
+	text-decoration: underline;
+	font-size: 102%;
+}
+#picture {
+	display: block;
+	border:none;
+	width: 200px;
+	height: 200px;
+}
+#list {
+	width: 1200px;
+	margin: 0 auto;
+}
+
+#logo {
+	margin-top:3px;
+	margin-left:3px;
+}
+
+#se {
+	width:600px;
+	height:50px;
+	margin:0 auto;
+}
+
+#se_in {
+	padding:0;
+	width: 500px;
+	height: 38px;
+	border:2px solid red;
+	outline:none;
+	font:18px/38px "microsoft yahei";
+	float:left; 
+}
+#se_bu{
+	background:red;
+	padding:0;
+	width: 80px;
+	height: 42px;
+	border: none;
+	outline:none;
+	color:white;
+	font:18px/42px "microsoft yahei";
+	float:left; 
+}
+#shop {
+	margin-top: 20px;
+}
+#select {
+	height: 20px;
+	width: 535px;
+	margin: 0 auto;
+	margin-top:10px; 
+}
+.page{
+	cursor: pointer;
+	text-decoration:none;
+    color:#000000;
+}
+#afterpage {
+
+}
+#beforepage {
+	margin-left:180px;
+}
+.mall a {
+	cursor: pointer;
+	text-decoration:none;
+    color:#000000;
+}
+

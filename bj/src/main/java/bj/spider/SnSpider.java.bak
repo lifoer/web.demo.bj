@@ -1,0 +1,66 @@
+package bj.spider;
+
+import java.io.IOException;
+import java.net.URLDecoder;
+import java.util.UUID;
+
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+
+import bj.utils.FileDown;
+
+public class SnSpider {
+	public static void main(String[] args) throws IOException {
+		String keyword = URLDecoder.decode("手机", "utf-8");
+		// System.out.println(keyword);
+		// String url =
+		// "https://search.suning.com/emall/searchProductList.do?keyword=java&ci=20006&pg=01&cp=0&il=0&isDoufu=1&st=8&iy=0&n=1&sesab=ABAABBAA&id=IDENTIFYING&cc=010&h=h";
+		String url = "https://search.suning.com/" + keyword + "/#second-filter";
+		Connection connect = Jsoup.connect(url);
+		connect.header("Accept", "*/*; q=0.01");
+		connect.header("Accept-Encoding", "gzip, deflate, sdch, br");
+		connect.header("Accept-Language", "zh-CN,zh;q=0.8");
+		connect.header("Connection", "keep-alive");
+		connect.header("Cookie",
+				"_snstyxuid=C02AA0825C82CIH4; sesab=ABAABBAA; sesabv=10%2C6%2C7%2C1%2C22%2C1%2C3%2C1; _snmc=1; _snsr=direct%7Cdirect%7C%7C%7C; _snma=1%7C152351727677311232%7C1523517276773%7C1523517276773%7C1523517276822%7C1%7C1; _snmp=152351727613076282; _snmb=152351727683138511%7C1523517276954%7C1523517276831%7C1; _snms=152351727695568402; authId=si15C4C3031800B988DD3496E5B3EB8B19; secureToken=2BB2519BDF2F965378D5CA9E759A8F21; SN_CITY=10_010_1000000_9017_01_10106_2_0; cityId=9017; districtId=10106; _snmc=1; _snmp=152351584293368582; _snmb=152351320021376493%7C1523515843468%7C1523515843383%7C20; _snms=152351584346874741; sesab=ABAABAAA; sesabv=10%2C6%2C7%2C1%2C22%2C1%2C3%2C1");
+		connect.header("Host", "search.suning.com");
+		connect.header("User-Agent",
+				"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.98 Safari/537.36 LBBROWSER");
+		Document doc = connect.get();
+		FileDown.docWrite(doc);
+		System.out.println(doc.toString());
+		for (int i = 0; i < 60; i++) {
+			// 设置no为uuid
+			String no = UUID.randomUUID().toString();
+			System.out.println(i + ":" + no);
+			// 1、获取商品名称
+			Element ele1 = doc.select("ul li .li-bg .product-box .res-info .title-selling-point a").get(i);
+			String title = ele1.attr("title");
+			System.out.println(i + ":" + title);
+			// 2、获取商品价格
+			// 获取商品id
+			Element ele2 = doc.select("ul li").get(i);
+			String id = ele2.attr("id");
+			String id2 = id.substring(1).replaceAll("-", "");
+			System.out.println(i + ":" + id2);
+			// 3、获取商品描述
+			String comment = "";
+			System.out.println(i + ":" + comment);
+			// 4、获取商品详情
+			Element ele3 = doc.select("ul li .li-bg .product-box .res-info .selling-point em").get(i);
+			String des = ele3.text();
+			System.out.println(i + ":" + des);
+			// 5、获取商品链接
+			Element ele4 = doc.select("ul li .li-bg .product-box .res-info .title-selling-point a").get(i);
+			String link = "http:" + ele4.attr("href");
+			System.out.println(i + ":" + link);
+			// 6、获取商品图片
+			Element ele5 = doc.select("ul li .li-bg .product-box .res-img .img-block a img").get(i);
+			String image = "http:" + ele5.attr("src2");
+			System.out.println(i + ":" + image);
+			System.out.println();
+		}
+	}
+}

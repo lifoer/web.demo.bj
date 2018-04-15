@@ -1,0 +1,119 @@
+package bj.spider;
+
+import java.io.IOException;
+import java.util.UUID;
+
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import bj.mapper.GoodsMapper;
+import bj.pojo.Goods;
+
+@Service
+public class TmSpider {
+
+	@Autowired
+	private GoodsMapper goodsMapper;
+
+	public void insertTmGoods(String q) {
+		tbCrawler(q);
+	}
+
+	private void tbCrawler(String q) {
+		// 条数，第二页60开始
+		int s = 0;
+		String url = "https://list.tmall.com/search_product.htm?s=" + s + "&q=" + q + "&sort=d";
+		Connection connect = Jsoup.connect(url);
+		connect.header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
+		connect.header("Accept-Encoding", "gzip, deflate, sdch, br");
+		connect.header("Accept-Language", "zh-CN,zh;q=0.8");
+		connect.header("Cache-Control", "max-age=0");
+		connect.header("Connection", "keep-alive");
+		connect.header("Cookie",
+				"enc=zhmixJ8gXW%2F6o%2FNxuO6UiVSmdXwm3Fb%2Bsm1Su3PCgYk%2BIjg9BL1yhFQA%2F7cndpNosw2muim1jo8Tjq9B2TE0hA%3D%3D; cna=HENVE/b6HBYCAXLy+n//eBTr; dnk=lianguobian123; uc1=cookie14=UoTePTFGI1lZGw%3D%3D&lng=zh_CN&cookie16=VFC%2FuZ9az08KUQ56dCrZDlbNdA%3D%3D&existShop=true&cookie21=W5iHLLyFeYZ1WM9hVnmS&tag=8&cookie15=W5iHLLyFOGW7aA%3D%3D&pas=0; uc3=nk2=D8rn9aqbxFLzIGp4tII%3D&id2=UUppqxet7qwE5g%3D%3D&vt3=F8dBz4D424J9iz2Ht3g%3D&lg2=WqG3DMC9VAQiUQ%3D%3D; tracknick=lianguobian123; _l_g_=Ug%3D%3D; unb=2283621370; lgc=lianguobian123; cookie1=Vv7MXc%2FG2LiEnQmM5xB9jFu1x0%2BJvANSRan4H%2B7w1OM%3D; login=true; cookie17=UUppqxet7qwE5g%3D%3D; cookie2=10199a48513b53fd322bafb7959e344f; _nk_=lianguobian123; sg=30d; t=d59a875afbf2b73be659a4ad90b1ad18; csg=b2807d52; _tb_token_=75f767bd10551; tt=login.tmall.com; _med=dw:1366&dh:768&pw:1366&ph:768&ist:0; res=scroll%3A1349*5484-client%3A1349*635-offset%3A1349*5484-screen%3A1366*768; pnm_cku822=098%23E1hv69vUvbpvUpCkvvvvvjiPPFMpzjinRLMU0jrCPmPpljtbn2s9lji8RF5hzjnbRTwCvvpvvhHhRphvCvvvphvCvpvVvUCvpvvvuphvmvvvpoP7%2F1m7kphvC9hvpyPZzbyCvm9vvhvavvvvvvvvBBWvvvVYvvCHhQvv9pvvvhZLvvvCfvvvBBWvvvVYmphvLUvRDXZa6fItn1viHWLUVBOqrADn9Wma%2BfmtEpch6C6t%2BFIlBqev%2Bu6Od56OfwmKDBVQUQVQiXTOVB16Bq2XrqpAhjCbFO7t%2B3mOaZGPvpvhMMGvvv%3D%3D; isg=BO_vtS9a6aiYk-2UycJFWnw0bAM5PGiOFCR0WgF8pd5lUA5SCWXEBtZC1kDuKBsu");
+		connect.header("Host", "list.tmall.com");
+		connect.header("Referer",
+				"https://login.tmall.com/?from=sm&redirectURL=https%3A%2F%2Fsec.taobao.com%2Fquery.htm%3Faction%3DQueryAction%26event_submit_do_login%3Dok%26smApp%3Dtmallsearch%26smPolicy%3Dtmallsearch-product-anti_Spider-html-checklogin%26smCharset%3DGBK%26smTag%3DMTE0LjI0Mi4yNTAuMTI3LCw3YTRlMTJhNWFlMjQ0ZTAzYWI2YjQ2YzMwZGNlNmZlZg%253D%253D%26captcha%3Dhttps%253A%252F%252Fsec.taobao.com%252Fquery.htm%26smReturn%3Dhttps%253A%252F%252Flist.tmall.com%252Fsearch_product.htm%253Fq%253Djava%2526type%253Dp%2526vmarket%253D%2526spm%253D875.7931836%25252FB.a2227oh.d100%2526from%253Dmallfp..pc_1_searchbutton%26smSign%3Dnq1ZZoawWxulJ6Rox5c1mA%253D%253D");
+		connect.header("Upgrade-Insecure-Requests", "1");
+		connect.header("User-Agent",
+				"Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.98 Safari/537.36 LBBROWSER");
+		try {
+			Document doc = connect.get();
+			for (int i = 0; i < 60; i++) {
+				try {
+					// 生成商品序号uuid
+					String no = UUID.randomUUID().toString();
+					// 商品名称
+					Element ele1 = doc.select("#J_ItemList .product-iWrap .productTitle a").get(i);
+					String title = ele1.text().replaceAll("</?span[^><]*>", " ");
+					// 商品价格
+					Element ele2 = doc.select("#J_ItemList .product-iWrap .productPrice em").get(i);
+					Double price = Double.parseDouble(ele2.attr("title"));
+					// 商品评论
+					// 在商品列表页面有些商品没有评论和销量，通过css选择器获取后会导致后续顺序错误
+					// 解决方式只能深入商品详情页面，
+					// 暂不去深入了，先置为空,有待后续研究。
+					/*
+					 * String comment = ""; Element ele3 = doc.
+					 * select("#J_ItemList .product-iWrap .productStatus span:nth-child(2) a"
+					 * ).get(i); comment = ele3.text(); System.out.println(i+
+					 * "评论:" + comment);
+					 */
+					String comment = "";
+					// 商品详情，店铺名暂代
+					Element ele4 = doc.select("#J_ItemList .product-iWrap .productShop .productShop-name").get(i);
+					String store = ele4.text();
+					/*
+					 * Element ele5 = doc.
+					 * select("#J_ItemList .product-iWrap .productStatus span:nth-child(1) em"
+					 * ).get(i); String success = ele5.text(); String des =
+					 * store + ":月成交" + success;
+					 */
+					String des = store;
+					// 商品链接
+					Element ele6 = doc.select("#J_ItemList .product-iWrap .productTitle a").get(i);
+					String link = "http:" + ele6.attr("href");
+					String image = "";
+					Element ele7;
+					// 获取商品图片
+					if (doc.select("#J_ItemList .product-iWrap .productThumb").size() == 0) {
+						ele7 = doc.select("#J_ItemList .product-iWrap .productImg-wrap .productImg img").get(i);
+						image = "http:" + ele7.attr("src");
+					} else {
+						ele7 = doc.select("#J_ItemList .product-iWrap .productThumb")
+								.select(".clearfix .proThumb-wrap b:nth-child(1) img").get(i);
+						if (ele7.attr("src") != null && !ele7.attr("src").equals("")) {
+							image = "http:" + ele7.attr("src").split("_30x30.jpg")[0];
+						} else if (ele7.attr("data-ks-lazyload") != null && !ele7.attr("data-ks-lazyload").equals("")) {
+							image = "http:" + ele7.attr("data-ks-lazyload").split("_30x30.jpg")[0];
+						}
+					}
+					// 商品图片下载
+					/*
+					 * if(!image.equals("")) { String imageName =
+					 * UUID.randomUUID().toString() +
+					 * image.substring(image.lastIndexOf(".")); String dir =
+					 * "E://pictures/tm"; FileDown.imageDown(image, dir,
+					 * imageName); }
+					 */
+					// 商城名称
+					String mall = "天猫";
+					// 封装成Goods
+					Goods goods = new Goods(no, title, price, comment, des, link, image, mall);
+					// 写入数据库
+					goodsMapper.insertGoods(goods);
+				} catch (Exception e) {
+					e.printStackTrace();
+					continue;
+				}
+			}
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+
+	}
+}

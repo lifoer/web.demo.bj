@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="bj.mapper.GoodsMapper">
+	<select id="queryGoods" resultType="Goods">
+		select * from goods
+	</select>
+	
+	<select id="queryPriceGoods" resultType="Goods">
+		select * from goods order by price
+	</select>
+	
+	<update id="updateGoods">
+		truncate table goods
+	</update>
+
+	<insert id="insertGoods" parameterType="Goods">
+		insert into goods (no, title, price, comment, des, link, image, mall) values (#{no}, #{title}, #{price}, #{comment}, #{des}, #{link}, #{image}, #{mall})
+	</insert>
+	
+</mapper>
