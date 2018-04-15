@@ -31,7 +31,7 @@ public class GoodsController {
 			@RequestParam(required = false, defaultValue = "1", value = "pageNum") int pageNum, Model model,
 			HttpSession session) {
 		if (word != null && !word.equals("") && shop != null && shop.length > 0) {
-			// 返回商品,分页每页60条
+			//返回商品集合
 			PageInfo<Goods> pageInfo = goodsService.updateGoods(word, shop, sort, pageNum, session);
 			model.addAttribute("pageInfo", pageInfo);
 			// 返回多选框
